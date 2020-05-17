@@ -1,5 +1,6 @@
 from discord.ext.commands import Cog
 from discord.ext import commands
+from discord import Embed, Colour
 
 from call_bot.models import session, Phone
 
@@ -55,8 +56,15 @@ class PhoneBook(Cog):
 
     @commands.command(name='pb')
     async def list_phones(self, ctx):
-        for phone in session.query(Phone).all():
-            await ctx.send(phone)
+        embed = Embed()
+        embed.colour = Colour.from_rgb(100, 0, 0)
+        embed.title = 'List of alls phone-numbers in phonebook'
+
+        # Formating like '<1000' dosn`t work in Embed (eat all spaces more one)
+        text = '\n'.join([f'{phone.name} : {phone.phone}' for phone in session.query(Phone).all()])
+
+        embed.add_field(name='List <Name:Phone>', value=text, inline=True)
+        await ctx.send(embed=embed)
 
     @commands.command(name='clear')
     async def clear_messages(self, ctx, amount: int = 1):
