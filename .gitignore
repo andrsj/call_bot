@@ -1,3 +1,6 @@
 .idea
 env
 *.call
+.env
+local_settings.py
+__pycache__
