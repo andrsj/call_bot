@@ -16,12 +16,22 @@ async def on_ready():
     print('Ready')
 
 
-@bot.command(name='save')
+@bot.command(aliases=['s', 'save'])
 async def save_phone(ctx, phone, name):
     phone = Phone(phone, name)
     session.add(phone)
     session.commit()
     await ctx.send(f'Add done -> {phone}')
+
+
+@bot.command(name='edit')
+async def edit_name_by_phone(ctx, phone, new_name):
+    phone_by_name = session.query(Phone)\
+        .filter(Phone.phone == phone)\
+        .first()
+    phone_by_name.name = new_name
+    session.commit()
+    await ctx.send(f'Phone {phone_by_name} succesfully updated')
 
 
 @bot.command(name='pb')

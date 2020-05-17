@@ -5,8 +5,8 @@ from .database import Base
 class Phone(Base):
     __tablename__ = 'phones'
     id = Column(Integer, primary_key=True)
-    name = Column(String(50))
-    phone = Column(String(12))
+    name = Column(String, unique=True)
+    phone = Column(String(12), unique=True)
 
     def __init__(self, phone, name):
         self.name = name
