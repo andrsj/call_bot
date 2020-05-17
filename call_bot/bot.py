@@ -1,7 +1,7 @@
 from discord.ext import commands
 
-from settings import DISCORD_BOT_TOKEN
-from models import Session, Phone, Base, engine
+from call_bot.settings import DISCORD_BOT_TOKEN
+from call_bot.models import Session, Phone, Base, engine
 
 
 bot = commands.Bot(command_prefix='!')
