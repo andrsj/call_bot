@@ -3,3 +3,4 @@ from .phones import Phone
 from .session import Session
 
 Session.configure(bind=engine)
+session = Session()
