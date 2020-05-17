@@ -1,15 +1,14 @@
 from discord.ext import commands
 
 
-from call_bot.models import Base, engine
-from call_bot.commands import PhoneBook
+from call_bot.listeners import on_ready
+from call_bot.commands import PhoneBook, NotForDeployCommandBot
 
 
-bot = commands.Bot(command_prefix='!')
-bot.add_cog(PhoneBook(bot))
+def create_bot():
+    bot = commands.Bot(command_prefix='!')
+    bot.add_cog(PhoneBook(bot))
+    bot.add_cog(NotForDeployCommandBot(bot))
+    bot.add_listener(on_ready)
 
-
-@bot.event
-async def on_ready():
-    Base.metadata.create_all(engine)
-    print('Ready')
+    return bot

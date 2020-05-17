@@ -5,6 +5,32 @@ from discord import Embed, Colour
 from call_bot.models import session, Phone
 
 
+brief = {
+    'save': 'Saving phone numbers in phonebook',
+    'pb': 'Display a list of all numbers',
+    'edit': 'Editing saved phonenumber names',
+}
+
+description = {
+    'save': 'Saving phone number in phonebook\n'
+            'Attributes:\n'
+            'Phone: string <required>\n'
+            'Name: string <required>\n'
+            'Priority: boolean <required>\n'
+            'Banned: boolean [default => False]\n'
+            '\n'
+            'P.S. For True u can use:\n'
+            "['yes', 'y', 'true', 't', '1', 'enable', 'on']\n"
+            'For False u can use:\n'
+            "['no', 'n', 'false', 'f', '0', 'disable', 'off']",
+    'pb':   'Display a list of all numbers',
+    'edit': 'Edit username by phonenumber in phonebook\n'
+            'Attributes:\n'
+            'Phone: string <required>\n'
+            'Name: string <required>',
+}
+
+
 class PhoneBook(Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -25,10 +51,10 @@ class PhoneBook(Cog):
                 .first()
         )
 
-    @commands.command(name='save')
-    async def save_phone(self, ctx, phone, name):
+    @commands.command(name='save', brief=brief['save'], description=description['save'])
+    async def save_phone(self, ctx, phone, name, priority: bool, banned: bool = False):
 
-        phone = Phone(phone, name)
+        phone = Phone(phone, name, priority, banned)
         if self._check_for_record_by_name(phone):
             await ctx.send(f'User with this phone number \'{phone.phone}\'\n'
                            f'{phone} is already exist\n'
@@ -40,9 +66,15 @@ class PhoneBook(Cog):
         else:
             session.add(phone)
             session.commit()
-            await ctx.send(f'Add done -> {phone}')
+            await ctx.send(f'Add done: {phone}')
 
-    @commands.command(name='edit')
+    @save_phone.error
+    async def save_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send(f'U miss required parametr \'{error.param}\'\n'
+                           f'Syntaxis: `!save phone_number user_name priority: bool, banned: bool`')
+
+    @commands.command(name='edit', brief=brief['edit'], description=description['edit'])
     async def edit_name_by_phone(self, ctx, phone, new_name):
         phone_by_name = session.query(Phone) \
             .filter(Phone.phone == phone) \
@@ -54,23 +86,18 @@ class PhoneBook(Cog):
         else:
             await ctx.send(f'User by \'{phone}\' not found!')
 
-    @commands.command(name='pb')
+    @commands.command(name='pb', brief=brief['pb'], description=description['pb'])
     async def list_phones(self, ctx):
         embed = Embed()
-        embed.colour = Colour.from_rgb(100, 0, 0)
+        embed.colour = 0xFF0000
         embed.title = 'List of alls phone-numbers in phonebook'
 
-        # Formating like '<1000' dosn`t work in Embed (eat all spaces more one)
+        # Formating like '<1000' dosn`t work in Embed
+        # Embed eat all spaces more one
         text = '\n'.join([f'{phone.name} : {phone.phone}' for phone in session.query(Phone).all()])
-
-        embed.add_field(name='List <Name:Phone>', value=text, inline=True)
-        await ctx.send(embed=embed)
-
-    @commands.command(name='clear')
-    async def clear_messages(self, ctx, amount: int = 1):
-        await ctx.channel.purge(limit=amount)
-
-    @commands.command(name='exit')
-    async def exit_bot(self, ctx):
-        await ctx.send('BB')
-        exit('Close bot')
+        if text:
+            embed.add_field(name='List <Name:Phone>', value=text)
+            await ctx.send(embed=embed)
+        else:
+            embed.add_field(name='Ooops, not found numbers', value='U need to add number into phonebook')
+            await ctx.send(ember=embed)
