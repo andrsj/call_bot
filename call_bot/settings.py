@@ -1,3 +1,5 @@
+SQL_URL = 'sqlite:///callbot.db'
+
 
 try:
     from call_bot.local_settings import *
