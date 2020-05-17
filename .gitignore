@@ -5,3 +5,4 @@ env
 call_bot/local_settings.py
 __pycache__
 *.egg-info
+.db
