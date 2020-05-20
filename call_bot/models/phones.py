@@ -20,6 +20,6 @@ class Phone(Base):
 
     def __repr__(self):
         return (
-            f"< Phone ( {self.phone}, {self.name} ) >"
+            f"< Phone ( {self.phone}, {self.name} ) >\n"
             f"[User banned:{self.banned}, priority:{self.priority}]"
         )

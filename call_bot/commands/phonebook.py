@@ -66,13 +66,13 @@ class PhoneBook(Cog):
         else:
             session.add(phone)
             session.commit()
-            await ctx.send(f'Add done: {phone}')
+            await ctx.send(f'Add done: \n{phone}')
 
     @save_phone.error
     async def save_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(f'U miss required parametr \'{error.param}\'\n'
-                           f'Syntaxis: `!save phone_number user_name priority: bool, banned: bool`')
+                           f'Syntaxis: `!save phone_number user_name`')
 
     @commands.command(name='edit', brief=brief['edit'], description=description['edit'])
     async def edit_name_by_phone(self, ctx, phone, new_name):
@@ -82,7 +82,7 @@ class PhoneBook(Cog):
         if phone_by_name:
             phone_by_name.name = new_name
             session.commit()
-            await ctx.send(f'Phone {phone_by_name} succesfully updated')
+            await ctx.send(f'Phone:\n{phone_by_name}\nSuccesfully updated')
         else:
             await ctx.send(f'User by \'{phone}\' not found!')
 
