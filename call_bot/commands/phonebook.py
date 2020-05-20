@@ -1,22 +1,22 @@
 from discord.ext.commands import Cog
 from discord.ext import commands
-from discord import Embed, Colour
+from discord import Embed
 
 from call_bot.models import session, Phone
 
 
 brief = {
-    'save': 'Saving phone numbers in phonebook',
+    'save': 'Saving phone numbers in phone book',
     'pb': 'Display a list of all numbers',
-    'edit': 'Editing saved phonenumber names',
+    'edit': 'Editing saved phone number names',
 }
 
 description = {
-    'save': 'Saving phone number in phonebook\n'
+    'save': 'Saving phone number in phone book\n'
             'Attributes:\n'
             'Phone: string <required>\n'
             'Name: string <required>\n'
-            'Priority: boolean <required>\n'
+            'Priority: boolean [default => False]\n'
             'Banned: boolean [default => False]\n'
             '\n'
             'P.S. For True u can use:\n'
@@ -24,10 +24,10 @@ description = {
             'For False u can use:\n'
             "['no', 'n', 'false', 'f', '0', 'disable', 'off']",
     'pb':   'Display a list of all numbers',
-    'edit': 'Edit username by phonenumber in phonebook\n'
+    'edit': 'Edit username by phone number in phone book\n'
             'Attributes:\n'
             'Phone: string <required>\n'
-            'Name: string <required>',
+            'New name: string <required>',
 }
 
 
@@ -52,7 +52,7 @@ class PhoneBook(Cog):
         )
 
     @commands.command(name='save', brief=brief['save'], description=description['save'])
-    async def save_phone(self, ctx, phone, name, priority: bool, banned: bool = False):
+    async def save_phone(self, ctx, phone, name, priority: bool = False, banned: bool = False):
 
         phone = Phone(phone, name, priority, banned)
         if self._check_for_record_by_name(phone):
@@ -62,7 +62,7 @@ class PhoneBook(Cog):
         elif self._check_for_record_by_phonenumber(phone):
             await ctx.send(f'User with this name \'{phone.name}\'\n'
                            f'{phone} is already exist\n'
-                           'U can use !pb command for searching in phonebook')
+                           'U can use !pb command for searching in phone book')
         else:
             session.add(phone)
             session.commit()
@@ -96,8 +96,8 @@ class PhoneBook(Cog):
         # Embed eat all spaces more one
         text = '\n'.join([f'{phone.name} : {phone.phone}' for phone in session.query(Phone).all()])
         if text:
-            embed.add_field(name='List <Name:Phone>', value=text)
+            embed.add_field(name='List <Name : Phone>', value=text)
             await ctx.send(embed=embed)
         else:
-            embed.add_field(name='Ooops, not found numbers', value='U need to add number into phonebook')
+            embed.add_field(name='Ooops, not found numbers', value='U need to add number into phone book')
             await ctx.send(ember=embed)

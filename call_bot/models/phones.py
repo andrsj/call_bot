@@ -1,8 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean
-from textwrap import dedent
 
 
-from .database import Base
+from call_bot.models.database import Base
 
 
 class Phone(Base):
@@ -10,8 +9,8 @@ class Phone(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True)
     phone = Column(String(12), unique=True)
-    priority = Column(Boolean)
-    banned = Column(Boolean)
+    priority = Column(Boolean, default=False)
+    banned = Column(Boolean, default=False)
 
     def __init__(self, phone, name, priority=False, banned=False):
         self.name = name
@@ -20,6 +19,7 @@ class Phone(Base):
         self.banned = banned
 
     def __repr__(self):
-        return dedent(f"""
-        < Phone ( {self.phone}, {self.name} ) >
-        [User banned:{self.banned}, priority:{self.priority}]""")
+        return (
+            f"< Phone ( {self.phone}, {self.name} ) >"
+            f"[User banned:{self.banned}, priority:{self.priority}]"
+        )
