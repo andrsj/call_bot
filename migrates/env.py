@@ -6,7 +6,8 @@ from sqlalchemy import pool
 from alembic import context
 
 
-from call_bot.models.database import Base, SQL_URL
+from call_bot.models.database import Base
+from call_bot import settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -20,8 +21,6 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-
-# Include MetaData from my database.py for alembic
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
@@ -42,11 +41,9 @@ def run_migrations_offline():
     script output.
 
     """
-    # url = config.get_main_option("sqlalchemy.url")
-    # Edit url from settings.py for Alembic
-    url = SQL_URL
+
     context.configure(
-        url=url,
+        url=settings.SQL_URL,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
@@ -63,9 +60,9 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
-    # Edit url from settings.py for Alembic
     configuration = config.get_section(config.config_ini_section)
-    configuration['sqlalchemy.url'] = SQL_URL
+    configuration['sqlalchemy.url'] = settings.SQL_URL
+
     connectable = engine_from_config(
         configuration=configuration,
         prefix="sqlalchemy.",

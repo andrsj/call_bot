@@ -1,8 +1,8 @@
-"""Add table phone
+"""Phone book table
 
-Revision ID: 2399a1f9c5f7
-Revises: 0d05054eb024
-Create Date: 2020-05-17 18:52:37.184809
+Revision ID: 46c0abdf79e6
+Revises: 
+Create Date: 2020-05-20 17:35:28.503447
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '2399a1f9c5f7'
-down_revision = '0d05054eb024'
+revision = '46c0abdf79e6'
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -22,6 +22,8 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=True),
     sa.Column('phone', sa.String(length=12), nullable=True),
+    sa.Column('priority', sa.Boolean(), nullable=True),
+    sa.Column('banned', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name'),
     sa.UniqueConstraint('phone')
