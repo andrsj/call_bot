@@ -100,4 +100,4 @@ class PhoneBook(Cog):
             await ctx.send(embed=embed)
         else:
             embed.add_field(name='Ooops, not found numbers', value='U need to add number into phone book')
-            await ctx.send(ember=embed)
+            await ctx.send(embed=embed)
