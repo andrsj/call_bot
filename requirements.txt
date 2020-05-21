@@ -2,6 +2,7 @@ aiohttp==3.6.2
 alembic==1.4.2
 async-timeout==3.0.1
 attrs==19.3.0
+-e git+git@gitlab.com:call_bot/call_bot.git@ac258c41470a80a89cb668858a1c9b500aa45bd5#egg=call_bot
 chardet==3.0.4
 discord==1.0.1
 discord.py==1.3.3
@@ -9,6 +10,7 @@ idna==2.9
 Mako==1.1.2
 MarkupSafe==1.1.1
 multidict==4.7.6
+psycopg2==2.8.5
 python-dateutil==2.8.1
 python-editor==1.0.4
 six==1.14.0
