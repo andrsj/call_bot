@@ -2,7 +2,7 @@
 env
 *.call
 .env
-call_bot/local_settings.py
+call_bot/settings/bot.py
 __pycache__
 *.egg-info
 .db
