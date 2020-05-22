@@ -13,4 +13,7 @@ async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
         await ctx.send(error)
     else:
-        print(error)
+        print('Error: ', error)
+        print('Args: ', error.args)
+        print('Original: ', error.original)
+
