@@ -39,16 +39,16 @@ class PhoneBook(Cog):
     def _check_for_record_by_name(model):
         return bool(
             session.query(Phone)
-                .filter(Phone.phone == model.phone)
-                .first()
+            .filter(Phone.phone == model.phone)
+            .first()
         )
 
     @staticmethod
     def _check_for_record_by_phonenumber(model):
         return bool(
             session.query(Phone)
-                .filter(Phone.phone == model.phone)
-                .first()
+            .filter(Phone.phone == model.phone)
+            .first()
         )
 
     @commands.command(name='save', brief=brief['save'], description=description['save'])
@@ -66,7 +66,7 @@ class PhoneBook(Cog):
         else:
             session.add(phone)
             session.commit()
-            await ctx.send(f'Add done: \n{phone}')
+            await ctx.send(f'Add done: {phone}')
 
     @save_phone.error
     async def save_error(self, ctx, error):
@@ -82,7 +82,7 @@ class PhoneBook(Cog):
         if phone_by_name:
             phone_by_name.name = new_name
             session.commit()
-            await ctx.send(f'Phone:\n{phone_by_name}\nSuccesfully updated')
+            await ctx.send(f'Phone: {phone_by_name} succesfully updated')
         else:
             await ctx.send(f'User by \'{phone}\' not found!')
 
@@ -94,10 +94,39 @@ class PhoneBook(Cog):
 
         # Formating like '<1000' dosn`t work in Embed
         # Embed eat all spaces more one
-        text = '\n'.join([f'{phone.name} : {phone.phone}' for phone in session.query(Phone).all()])
+        text = '\n'.join(
+            sorted([f'{phone.name} : {phone.phone} '
+                    f'[p:{phone.priority} b:{phone.banned}]'
+                    for phone in session.query(Phone).all()])
+        )
         if text:
             embed.add_field(name='List <Name : Phone>', value=text)
             await ctx.send(embed=embed)
         else:
             embed.add_field(name='Ooops, not found numbers', value='U need to add number into phone book')
             await ctx.send(embed=embed)
+
+    @commands.command(name='prior', aliases=['p'])
+    async def prioritet(self, ctx, number, name):
+        phone_by_name_and_number = session.query(Phone) \
+            .filter(Phone.name == name and Phone.phone == number) \
+            .first()
+        if phone_by_name_and_number:
+            if phone_by_name_and_number.priority:
+                await ctx.send('This number already in prioritet')
+            else:
+                phone_by_name_and_number.priority = True
+                session.commit()
+                await ctx.send(f'{phone_by_name_and_number} succesfully updated priority to \'True\'')
+        else:
+            if self._check_for_record_by_phonenumber(number):
+                await ctx.send('This phone number already exist\n'
+                               'Check in \'pb\' for searching')
+            elif self._check_for_record_by_name(name):
+                await ctx.send('This user already exist in phone book\n'
+                               'Check in \'pb\' for searching')
+            else:
+                phone = Phone(number, name, True, False)
+                session.add(phone)
+                session.commit()
+                await ctx.send(f'{phone} succesfully add to phone book with priority \'True\'')

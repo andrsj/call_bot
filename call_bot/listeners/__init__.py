@@ -12,3 +12,5 @@ async def on_ready():
 async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
         await ctx.send(error)
+    else:
+        print(error)
