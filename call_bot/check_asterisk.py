@@ -6,5 +6,5 @@ from pycall import CallFile, Call, Application
 call = Call('SIP/380990154149')
 action = Application('Playback', 'hello-world')
 
-c = CallFile(call, action, spool_dir='.')
+c = CallFile(call, action, spool_dir='..')
 c.spool()
