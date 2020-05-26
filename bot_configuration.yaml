@@ -1,0 +1,13 @@
+channels:
+  main: lol
+  public: lmao
+  sound: kek
+conf:
+  aa:
+    sec: 0
+    value: false
+  autotake:
+    sec: 10
+    value: true
+  conf:
+    value: false

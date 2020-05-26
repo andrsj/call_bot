@@ -68,12 +68,6 @@ class PhoneBook(Cog):
             session.commit()
             await ctx.send(f'Add done: \n{phone}')
 
-    @save_phone.error
-    async def save_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(f'U miss required parametr \'{error.param}\'\n'
-                           f'Syntaxis: `!save phone_number user_name`')
-
     @commands.command(name='edit', brief=brief['edit'], description=description['edit'])
     async def edit_name_by_phone(self, ctx, phone, new_name):
         phone_by_name = session.query(Phone) \
