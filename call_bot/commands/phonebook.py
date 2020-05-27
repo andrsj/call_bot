@@ -133,44 +133,44 @@ class PhoneBook(Cog):
             session.commit()
             return f'{phone} succesfully updated priority to \'True\''
 
-    # todo реалізувати пошук по одному аргументу "імені"
+    def _prior_without_name(self, number):
+        phone_by_number = session.query(Phone) \
+            .filter(Phone.phone == number) \
+            .first()
+        if phone_by_number:
+            result = self._work_with_find_phone(phone_by_number)
+            return result
+        else:
+            return 'This phone number not found in phone book\n' \
+                   'Check in \'pb\' for searching'
+
+    def _prior_with_phone_model(self, name, number):
+        phone_by_name_and_number = session.query(Phone) \
+            .filter(Phone.name == name, Phone.phone == number) \
+            .first()
+
+        if phone_by_name_and_number:
+            return self._work_with_find_phone(phone_by_name_and_number)
+
+        else:
+            if self._check_for_record_by_phonenumber(number):
+                return 'This phone number already exist\n' \
+                       'Check in \'pb\' for searching'
+            elif self._check_for_record_by_name(name):
+                return 'This user already exist in phone book\n' \
+                       'Check in \'pb\' for searching'
+            else:
+                phone = Phone(number, name, True, False)
+                session.add(phone)
+                session.commit()
+                return f'{phone} succesfully add to phone book with priority \'True\''
+
     @commands.command(name='prior', aliases=['p'])
     async def prioritet(self, ctx, number, name=None):
-        # Якщо команда з аргументом name
-        if name is not None:
-            phone_by_name_and_number = session.query(Phone) \
-                .filter(Phone.name == name, Phone.phone == number) \
-                .first()
-            # Якщо знайдений номер, то ...
-            if phone_by_name_and_number:
-                result = self._work_with_find_phone(phone_by_name_and_number)
-                await ctx.send(result)
+        if name is None:
+            result = self._prior_without_name(number)
+            await ctx.send(result)
 
-            # Якщо не знайдений, то шукаємо по аргументах окремо,
-            # Якщо далі не знайдений, то створюємо новий з пріоритетом!
-            else:
-                if self._check_for_record_by_phonenumber(number):
-                    await ctx.send('This phone number already exist\n'
-                                   'Check in \'pb\' for searching')
-                elif self._check_for_record_by_name(name):
-                    await ctx.send('This user already exist in phone book\n'
-                                   'Check in \'pb\' for searching')
-                # Якщо не знайдений номер, то записати
-                else:
-                    phone = Phone(number, name, True, False)
-                    session.add(phone)
-                    session.commit()
-                    await ctx.send(f'{phone} succesfully add to phone book with priority \'True\'')
-
-        # Якщо команда без аргументу name
         else:
-            phone_by_number = session.query(Phone) \
-                .filter(Phone.phone == number) \
-                .first()
-            # Якщо знайдений номер ...
-            if phone_by_number:
-                result = self._work_with_find_phone(phone_by_number)
-                await ctx.send(result)
-            else:
-                await ctx.send('This phone number not found in phone book\n'
-                               'Check in \'pb\' for searching')
+            result = self._prior_with_phone_model(name, number)
+            await ctx.send(result)
