@@ -50,7 +50,7 @@ class PhoneBook(Cog):
                 .first()
             )
         else:
-            return None
+            raise TypeError(f'{type(item)} is not Phone or str')
 
     @staticmethod
     def _check_for_record_by_phonenumber(item):
@@ -67,7 +67,7 @@ class PhoneBook(Cog):
                 .first()
             )
         else:
-            return None
+            raise TypeError(f'{type(item)} is not Phone or str')
 
     @commands.command(name='save', brief=brief['save'], description=description['save'])
     async def save_phone(self, ctx, phone, name, priority: bool = False, banned: bool = False):
