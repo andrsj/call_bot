@@ -1,0 +1,13 @@
+channels:
+  main: main
+  public: public
+  sound: sound
+conf:
+  aa:
+    sec: 0
+    value: false
+  autotake:
+    sec: 0
+    value: false
+  conf:
+    value: false
