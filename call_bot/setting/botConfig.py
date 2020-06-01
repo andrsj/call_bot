@@ -13,6 +13,11 @@ class Config:
     public = config['channels']['public']
     sound = config['channels']['sound']
 
+    logging = {
+        'name': config['channels']['logs']['name'],
+        'id': config['channels']['logs']['id']
+    }
+
     autotake = config['conf']['autotake']['value']
     autotake_sec = config['conf']['autotake']['sec']
     conf = config['conf']['conf']['value']
@@ -103,3 +108,22 @@ class Config:
 
         for conf in Config.list_of_configs_int:
             Config.set_config_int_value(conf, config_default['conf'][conf]['sec'])
+
+    @classmethod
+    def set_logging_channel(cls, name: str, id_channel: int):
+        cls.logging['name'] = name
+        cls.logging['id'] = id_channel
+
+        config['channels']['logs']['name'] = name
+        config['channels']['logs']['id'] = id_channel
+
+        with open('bot_configuration.yaml', 'w') as configfilewrite:
+            yaml.dump(config, configfilewrite)
+
+    @classmethod
+    def get_logging_channel_name(cls):
+        return cls.logging['name']
+
+    @classmethod
+    def get_logging_channel_id(cls):
+        return cls.logging['id']

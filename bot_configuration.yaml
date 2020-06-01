@@ -1,13 +1,16 @@
 channels:
-  main: lol
-  public: lmao
-  sound: kek
+  logs:
+    id: 0
+    name: full-logs
+  main: main
+  public: public
+  sound: sound
 conf:
   aa:
     sec: 0
-    value: false
-  autotake:
-    sec: 10
     value: true
+  autotake:
+    sec: 0
+    value: false
   conf:
     value: false
