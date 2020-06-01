@@ -1,6 +1,6 @@
 from discord.ext.commands import Cog
 from discord.ext import commands
-import yaml
+
 
 from call_bot.setting.botConfig import Config
 
