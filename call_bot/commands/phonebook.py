@@ -3,6 +3,7 @@ from discord.ext import commands
 from discord import Embed
 
 from call_bot.models import session, Phone
+from call_bot.messages import ManagerMessages
 
 
 brief = {
@@ -57,7 +58,7 @@ class PhoneBook(Cog):
         if isinstance(item, Phone):
             return bool(
                 session.query(Phone)
-                .filter(Phone.phone == item.name)
+                .filter(Phone.phone == item.phone)
                 .first()
             )
         elif isinstance(item, str):
@@ -70,21 +71,17 @@ class PhoneBook(Cog):
             raise TypeError(f'{type(item)} is not Phone or str')
 
     @commands.command(name='save', brief=brief['save'], description=description['save'])
-    async def save_phone(self, ctx, phone, name, priority: bool = False, banned: bool = False):
+    async def save_phone(self, ctx, number, name, priority: bool = False, banned: bool = False):
 
-        phone = Phone(phone, name, priority, banned)
+        phone = Phone(number, name, priority, banned)
         if self._check_for_record_by_name(phone):
-            await ctx.send(f'User with this phone number \'{phone.phone}\'\n'
-                           f'{phone} is already exist\n'
-                           'U can use !edit command for change name')
+            await ctx.send(ManagerMessages.get_message_phone_already_exist('name', name))
         elif self._check_for_record_by_phonenumber(phone):
-            await ctx.send(f'User with this name \'{phone.name}\'\n'
-                           f'{phone} is already exist\n'
-                           'U can use !pb command for searching in phone book')
+            await ctx.send(ManagerMessages.get_message_phone_already_exist('number', number))
         else:
             session.add(phone)
             session.commit()
-            await ctx.send(f'Add done: {phone}')
+            await ctx.send(ManagerMessages.get_message_succesfully_add_phone(phone))
 
     @commands.command(name='edit', brief=brief['edit'], description=description['edit'])
     async def edit_name_by_phone(self, ctx, phone, new_name):
@@ -94,9 +91,9 @@ class PhoneBook(Cog):
         if phone_by_name:
             phone_by_name.name = new_name
             session.commit()
-            await ctx.send(f'Phone: {phone_by_name} succesfully updated')
+            await ctx.send(ManagerMessages.get_message_succesfully_update_phone(phone_by_name))
         else:
-            await ctx.send(f'User by \'{phone}\' not found!')
+            await ctx.send(ManagerMessages.get_message_not_found_phone(phone))
 
     @commands.command(name='pb', brief=brief['pb'], description=description['pb'])
     async def list_phones(self, ctx):
@@ -107,12 +104,12 @@ class PhoneBook(Cog):
         # Formating like '<1000' dosn`t work in Embed
         # Embed eat all spaces more one
         text = '\n'.join(
-            sorted([f'{phone.name} : {phone.phone} '
-                    f'[p:{phone.priority} b:{phone.banned}]'
-                    for phone in session.query(Phone).all()])
+            [f'{phone.name} : {phone.phone} '
+             f'[p:{phone.priority} b:{phone.banned}]'
+             for phone in session.query(Phone).order_by(Phone.name)]
         )
         if text:
-            embed.add_field(name='List <Name : Phone>', value=text)
+            embed.add_field(name='List <Name : Phone>', value='```' + text + '```')
             await ctx.send(embed=embed)
         else:
             embed.add_field(name='Ooops, not found numbers', value='U need to add number into phone book')
@@ -121,11 +118,11 @@ class PhoneBook(Cog):
     @staticmethod
     def _work_with_find_phone(phone: Phone):
         if phone.priority:
-            return 'This number already in prioritet'
+            return ManagerMessages.get_message_phone_already_in_prioritet()
         else:
             phone.priority = True
             session.commit()
-            return f'{phone} succesfully updated priority to \'True\''
+            return ManagerMessages.get_message_succesfully_update_phone_prioritet(phone)
 
     def _prior_without_name(self, number):
         phone_by_number = session.query(Phone) \
@@ -135,8 +132,7 @@ class PhoneBook(Cog):
             result = self._work_with_find_phone(phone_by_number)
             return result
         else:
-            return 'This phone number not found in phone book\n' \
-                   'Check in \'pb\' for searching'
+            return ManagerMessages.get_message_not_found_number()
 
     def _prior_with_phone_model(self, name, number):
         phone_by_name_and_number = session.query(Phone) \
@@ -145,19 +141,16 @@ class PhoneBook(Cog):
 
         if phone_by_name_and_number:
             return self._work_with_find_phone(phone_by_name_and_number)
-
         else:
             if self._check_for_record_by_phonenumber(number):
-                return 'This phone number already exist\n' \
-                       'Check in \'pb\' for searching'
+                return ManagerMessages.get_message_phone_already_exist_()
             elif self._check_for_record_by_name(name):
-                return 'This user already exist in phone book\n' \
-                       'Check in \'pb\' for searching'
+                return ManagerMessages.get_message_phone_already_exist_()
             else:
                 phone = Phone(number, name, True, False)
                 session.add(phone)
                 session.commit()
-                return f'{phone} succesfully add to phone book with priority \'True\''
+                return ManagerMessages.get_message_succesfully_add_phone(phone)
 
     @commands.command(name='prior', aliases=['p'])
     async def prioritet(self, ctx, number, name=None):
