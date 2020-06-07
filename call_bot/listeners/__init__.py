@@ -29,9 +29,11 @@ class Listeners(Cog):
             if channel.name == Config.get_logging_channel_name():
                 Config.set_logging_channel(channel.name, channel.id)
                 await channel.send(
+                    '```'
                     f"{datetime.now().strftime('%H:%M:%S %d/%m/%Y')} "
                     f' {self.bot.user.name} '
                     'Ready'
+                    '```'
                 )
 
     @Cog.listener()
@@ -44,11 +46,13 @@ class Listeners(Cog):
             f' \'{ctx.message.content}\' '
         )
         await self.bot.get_channel(id_channel).send(
+                '```'
                 f"{datetime.now().strftime('%H:%M:%S %d/%m/%Y')} "
-                f' {ctx.bot.user.name} '
-                f' \'{ctx.channel}\' '
-                f' {ctx.author.mention} '
-                f' \'{ctx.message.content}\' '
+                f'{ctx.bot.user.name} '
+                f'\'{ctx.channel}\' '
+                f'{ctx.author} '
+                f'\'{ctx.message.content}\''
+                '```'
             )
 
     @Cog.listener()
