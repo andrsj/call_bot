@@ -5,7 +5,7 @@ from logging.handlers import RotatingFileHandler
 
 
 from call_bot.models import Base, engine
-from call_bot.setting.botConfig import Config
+from call_bot.setting.botConfig import config_bot as config
 
 
 logger = logging.getLogger('discord')
@@ -26,8 +26,8 @@ class Listeners(Cog):
         Base.metadata.create_all(engine)
         logger.info('Bot connected to guild. Ready!')
         for channel in self.bot.get_all_channels():
-            if channel.name == Config.get_logging_channel_name():
-                Config.set_logging_channel(channel.name, channel.id)
+            if channel.name == config.get_logging_channel_name():
+                config.set_logging_channel(channel.name, channel.id)
                 await channel.send(
                     '```'
                     f"{datetime.now().strftime('%H:%M:%S %d/%m/%Y')} "
@@ -38,7 +38,7 @@ class Listeners(Cog):
 
     @Cog.listener()
     async def on_command(self, ctx: Context):
-        id_channel = Config.get_logging_channel_id()
+        id_channel = config.get_logging_channel_id()
         logger.info(
             f' {ctx.bot.user.name} '
             f' \'{ctx.channel}\' '
@@ -62,4 +62,5 @@ class Listeners(Cog):
         elif isinstance(error, MissingRequiredArgument):
             await ctx.send(f'U miss required parametr \'{error.param}\'')
         else:
+            print(error)
             logger.error(f'{error}, {ctx.message}')

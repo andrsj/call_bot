@@ -24,95 +24,92 @@ class Config:
     aa = config['conf']['aa']['value']
     aa_sec = config['conf']['aa']['sec']
 
-    @classmethod
-    def get_value_channel(cls, group):
-        if group == 'main':
-            return cls.main
-        elif group == 'public':
-            return cls.public
-        elif group == 'sound':
-            return cls.sound
-        else:
-            raise ValueError(f'Not found group, check in {cls.list_of_channels}')
+    def __new__(cls):
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(Config, cls).__new__(cls)
+        return cls.instance
 
-    @classmethod
-    def set_value_channel(cls, group, value):
+    def get_value_channel(self, group: str):
         if group == 'main':
-            cls.main = value
+            return self.main
         elif group == 'public':
-            cls.public = value
+            return self.public
         elif group == 'sound':
-            cls.sound = value
+            return self.sound
+        else:
+            raise ValueError(f'Not found group, check in {self.list_of_channels}')
+
+    def set_value_channel(self, group: str, value):
+        if group == 'main':
+            self.main = value
+        elif group == 'public':
+            self.public = value
+        elif group == 'sound':
+            self.sound = value
         else:
             raise ValueError('Not found group')
         config['channels'][group] = value
         with open('bot_configuration.yaml', 'w') as configfilewrite:
             yaml.dump(config, configfilewrite)
 
-    @classmethod
-    def get_config_boolean_value(cls, name):
+    def get_config_boolean_value(self, name):
         if name == 'autotake':
-            return cls.autotake
+            return self.autotake
         elif name == 'aa':
-            return cls.aa
+            return self.aa
         elif name == 'conf':
-            return cls.conf
+            return self.conf
         else:
             raise ValueError(f'Not found config parametr, check in {Config.list_of_configs_boolean}')
 
-    @classmethod
-    def set_config_boolean_value(cls, name, value):
+    def set_config_boolean_value(self, name: str, value: bool):
         if name == 'autotake':
-            cls.autotake = value
+            self.autotake = value
         elif name == 'aa':
-            cls.aa = value
+            self.aa = value
         elif name == 'conf':
-            cls.conf = value
+            self.conf = value
         else:
             raise ValueError(f'Not found config parametr, check in {Config.list_of_configs_boolean}')
         config['conf'][name]['value'] = value
         with open('bot_configuration.yaml', 'w') as configfilewrite:
             yaml.dump(config, configfilewrite)
 
-    @classmethod
-    def get_config_int_value(cls, name):
+    def get_config_int_value(self, name: str):
         if name == 'autotake':
-            return cls.autotake_sec
+            return self.autotake_sec
         elif name == 'aa':
-            return cls.aa_sec
+            return self.aa_sec
         else:
             raise ValueError(f'Not found config parametr, check in {Config.list_of_configs_int}')
 
-    @classmethod
-    def set_config_int_value(cls, name, value):
+    def set_config_int_value(self, name: str, value: int):
         if name == 'autotake':
-            cls.autotake_sec = value
+            self.autotake_sec = value
         elif name == 'aa':
-            cls.aa_sec = value
+            self.aa_sec = value
         else:
             raise ValueError(f'Not found config parametr, check in {Config.list_of_configs_int}')
         config['conf'][name]['sec'] = value
         with open('bot_configuration.yaml', 'w') as configfilewrite:
             yaml.dump(config, configfilewrite)
 
-    @staticmethod
-    def set_default():
+    def set_default(self):
         with open('default_bot_configuration.yaml') as conf_def_file:
             config_default = yaml.full_load(conf_def_file)
 
-        for channel in Config.list_of_channels:
-            Config.set_value_channel(channel, config_default['channels'][channel])
+        for channel in self.list_of_channels:
+            self.set_value_channel(channel, config_default['channels'][channel])
 
-        for conf in Config.list_of_configs_boolean:
-            Config.set_config_boolean_value(conf, config_default['conf'][conf]['value'])
+        for conf in self.list_of_configs_boolean:
+            self.set_config_boolean_value(conf, config_default['conf'][conf]['value'])
 
-        for conf in Config.list_of_configs_int:
-            Config.set_config_int_value(conf, config_default['conf'][conf]['sec'])
+        for conf in self.list_of_configs_int:
+            self.set_config_int_value(conf, config_default['conf'][conf]['sec'])
 
-    @classmethod
-    def set_logging_channel(cls, name: str, id_channel: int):
-        cls.logging['name'] = name
-        cls.logging['id'] = id_channel
+    def set_logging_channel(self, name: str, id_channel: int):
+        self.logging['name'] = name
+        self.logging['id'] = id_channel
 
         config['channels']['logs']['name'] = name
         config['channels']['logs']['id'] = id_channel
@@ -120,10 +117,11 @@ class Config:
         with open('bot_configuration.yaml', 'w') as configfilewrite:
             yaml.dump(config, configfilewrite)
 
-    @classmethod
-    def get_logging_channel_name(cls):
-        return cls.logging['name']
+    def get_logging_channel_name(self):
+        return self.logging['name']
 
-    @classmethod
-    def get_logging_channel_id(cls):
-        return cls.logging['id']
+    def get_logging_channel_id(self):
+        return self.logging['id']
+
+
+config_bot = Config()
