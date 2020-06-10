@@ -32,7 +32,6 @@ async def test_conf_command(interface: TestInterface):
     await interface.wait_for_message()
 
     for test_case in test_cases:
-        print(test_case)
         await interface.assert_reply_contains(*test_case)
 
 
@@ -53,7 +52,6 @@ async def test_aa_command(interface: TestInterface):
     await interface.wait_for_message()
 
     for test_case in test_cases:
-        print(test_case)
         await interface.assert_reply_equals(*test_case)
 
 
@@ -74,7 +72,6 @@ async def test_autotake_command(interface: TestInterface):
     await interface.wait_for_message()
 
     for test_case in test_cases:
-        print(test_case)
         await interface.assert_reply_equals(*test_case)
 
 
@@ -100,7 +97,6 @@ async def test_set_main_command(interface: TestInterface):
     await interface.wait_for_message()
 
     for test_case in test_cases:
-        print(test_case)
         await interface.assert_reply_equals(*test_case)
 
 
@@ -126,7 +122,6 @@ async def test_set_public_command(interface: TestInterface):
     await interface.wait_for_message()
 
     for test_case in test_cases:
-        print(test_case)
         await interface.assert_reply_equals(*test_case)
 
 
@@ -152,7 +147,6 @@ async def test_set_sound_command(interface: TestInterface):
     await interface.wait_for_message()
 
     for test_case in test_cases:
-        print(test_case)
         await interface.assert_reply_equals(*test_case)
 
 
@@ -171,7 +165,6 @@ async def test_set_command(interface: TestInterface):
     )
 
     for test_case in test_cases:
-        print(test_case)
         await interface.assert_reply_equals(*test_case)
 
 
@@ -203,7 +196,6 @@ async def test_save_command(interface: TestInterface):
     )
 
     for test_case in test_cases:
-        print(test_case)
         await interface.assert_reply_equals(*test_case)
 
     delete_test_users_by_name_like_test_()
@@ -231,7 +223,6 @@ async def test_edit_command(interface: TestInterface):
     await interface.wait_for_message()
 
     for test_case in test_cases:
-        print(test_case)
         await interface.assert_reply_equals(*test_case)
 
     delete_test_users_by_name_like_test_()
@@ -336,7 +327,6 @@ async def test_prior_command(interface: TestInterface):
     await interface.wait_for_message()
 
     for test_case in test_cases:
-        print(test_case)
         await interface.assert_reply_equals(*test_case)
 
     delete_test_users_by_name_like_test_()
