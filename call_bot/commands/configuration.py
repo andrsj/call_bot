@@ -2,7 +2,7 @@ from discord.ext.commands import Cog
 from discord.ext import commands
 
 
-from call_bot.setting.botConfig import Config
+from call_bot.setting.botConfig import config_bot as config
 from call_bot.messages import ManagerMessages
 
 
@@ -29,40 +29,40 @@ class Configuration(Cog):
 
     @staticmethod
     def _check_indentical_channel(group, value):
-        return value == Config.get_value_channel(group)
+        return value == config.get_value_channel(group)
 
     @staticmethod
-    def _set_channel(group, channel):
+    def _set_channel(group, channel: str):
         if not Configuration._check_indentical_channel(group, channel):
-            if group in Config.list_of_channels:
-                Config.set_value_channel(group, channel)
+            if group in config.list_of_channels:
+                config.set_value_channel(group, channel)
                 return ManagerMessages.get_message_succesfully_update_channel(group, channel)
             else:
-                raise ValueError(f'Invalid argument value: use {Config.list_of_channels}')
+                raise ValueError(f'Invalid argument value: use {config.list_of_channels}')
         else:
             return ManagerMessages.get_message_already_set_channel(group, channel)
 
     @commands.command(name='set')
     async def setter(self, ctx, group, channel=None):
-        if group in Config.list_of_channels:
+        if group in config.list_of_channels:
             if channel is not None:
                 result = self._set_channel(group, channel)
                 await ctx.send(result)
             else:
                 await ctx.send(ManagerMessages.get_message_miss_required_param_for_channels())
         elif group == 'default' and channel is None:
-            Config.set_default()
+            config.set_default()
             await ctx.send(ManagerMessages.get_message_succesfully_set_default())
         else:
             await ctx.send(ManagerMessages.get_message_not_found_set_group(group))
 
     @staticmethod
     def _check_indentical_config_parametr(name, value):
-        return value == Config.get_config_boolean_value(name)
+        return value == config.get_config_boolean_value(name)
 
     def _set_config_boolean_value(self, name, value):
         if not Configuration._check_indentical_config_parametr(name, value):
-            Config.set_config_boolean_value(name, value)
+            config.set_config_boolean_value(name, value)
             value = self._get_string_of_boolean(value)
             return ManagerMessages.get_message_succesfully_update_config(name, value)
         else:
@@ -73,7 +73,7 @@ class Configuration(Cog):
     def _try_set_config_int_value(name, value):
         try:
             value = int(value)
-            Config.set_config_int_value(name, value)
+            config.set_config_int_value(name, value)
         except ValueError:
             return ManagerMessages.get_message_not_int_or_on_off_value(value)
         else:
@@ -90,7 +90,7 @@ class Configuration(Cog):
                 result = self._try_set_config_int_value('autotake', value)
                 await ctx.send(result)
         else:
-            value = self._get_string_of_boolean(Config.get_config_boolean_value('autotake'))
+            value = self._get_string_of_boolean(config.get_config_boolean_value('autotake'))
             await ctx.send(ManagerMessages.get_message_value_of_conf('autotake', value))
 
     @commands.command(name='conf')
@@ -99,7 +99,7 @@ class Configuration(Cog):
             result = self._set_config_boolean_value('conf', value)
             await ctx.send(result)
         else:
-            value = self._get_string_of_boolean(Config.get_config_boolean_value('conf'))
+            value = self._get_string_of_boolean(config.get_config_boolean_value('conf'))
             await ctx.send(ManagerMessages.get_message_value_of_conf('conf', value))
 
     @commands.command(name='aa')
@@ -113,5 +113,5 @@ class Configuration(Cog):
                 result = self._try_set_config_int_value('aa', value)
                 await ctx.send(result)
         else:
-            value = self._get_string_of_boolean(Config.get_config_boolean_value('aa'))
+            value = self._get_string_of_boolean(config.get_config_boolean_value('aa'))
             await ctx.send(ManagerMessages.get_message_value_of_conf('aa', value))
