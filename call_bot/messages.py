@@ -15,8 +15,8 @@ class ManagerMessages:
         return 'Bot configuration succesfully set to default values'
 
     @staticmethod
-    def get_message_miss_required_param_for_channels():
-        return f'U miss required parametr for channel set'
+    def get_message_miss_required_param(param):
+        return f'U miss required parametr \'{param}\''
 
     @staticmethod
     def get_message_not_found_set_group(value):

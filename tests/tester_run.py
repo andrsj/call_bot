@@ -32,7 +32,7 @@ async def test_conf_command(interface: TestInterface):
     await interface.wait_for_message()
 
     for test_case in test_cases:
-        await interface.assert_reply_contains(*test_case)
+        await interface.assert_reply_equals(*test_case)
 
 
 @test_collector()
@@ -81,7 +81,7 @@ async def test_set_main_command(interface: TestInterface):
     test_cases = (
             (
                 command,
-                ManagerMessages.get_message_miss_required_param_for_channels()
+                ManagerMessages.get_message_miss_required_param('channel: str')
             ),
             (
                 command + ' main',
@@ -106,7 +106,7 @@ async def test_set_public_command(interface: TestInterface):
     test_cases = (
         (
             command,
-            ManagerMessages.get_message_miss_required_param_for_channels()
+            ManagerMessages.get_message_miss_required_param('channel: str')
         ),
         (
             command + ' public',
@@ -131,7 +131,7 @@ async def test_set_sound_command(interface: TestInterface):
     test_cases = (
         (
             command,
-            ManagerMessages.get_message_miss_required_param_for_channels()
+            ManagerMessages.get_message_miss_required_param('channel: str')
         ),
         (
             command + ' sound',
@@ -157,10 +157,6 @@ async def test_set_command(interface: TestInterface):
         (
             command + ' default',
             ManagerMessages.get_message_succesfully_set_default()
-        ),
-        (
-            command + ' blabla',
-            ManagerMessages.get_message_not_found_set_group('blabla')
         ),
     )
 
