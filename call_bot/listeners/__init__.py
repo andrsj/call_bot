@@ -5,6 +5,7 @@ from logging.handlers import RotatingFileHandler
 
 
 from call_bot.models import Base, engine
+from call_bot.messages import ManagerMessages as Manager
 from call_bot.setting.botConfig import config_bot as config
 
 
@@ -31,7 +32,7 @@ class Listeners(Cog):
                 await channel.send(
                     '```'
                     f"{datetime.now().strftime('%H:%M:%S %d/%m/%Y')} "
-                    f' {self.bot.user.name} '
+                    f'{self.bot.user.name} '
                     'Ready'
                     '```'
                 )
@@ -58,9 +59,8 @@ class Listeners(Cog):
     @Cog.listener()
     async def on_command_error(self, ctx: Context, error):
         if isinstance(error, CommandNotFound):
-            await ctx.send(error)
+            await ctx.send(str(error))
         elif isinstance(error, MissingRequiredArgument):
-            await ctx.send(f'U miss required parametr \'{error.param}\'')
+            await ctx.send(Manager.get_message_miss_required_param(error.param))
         else:
-            print(error)
             logger.error(f'{error}, {ctx.message}')
