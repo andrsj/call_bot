@@ -1,3 +1,5 @@
+from textwrap import dedent
+
 from discord.ext.commands import Cog, Context
 from discord.ext import commands
 from typing import Union
@@ -34,6 +36,37 @@ class Bool:
         return self.str_value
 
 
+description = {
+    'set': 'Set command configuration',
+    'set main': dedent(
+        """Set main channel
+        A text channel has been registered 
+        on which the bot will display all the information about the call."""
+    ),
+    'set sound': dedent(
+        """Set sound channel
+        A channel is prescribed to control the sound channel 
+        in which the bot listens to commands that work with audio
+        """
+    ),
+    'set public': dedent(
+        """Set public channel
+        Text channel in which the bot gives information 
+        about the call without a private number. 
+        No one but the bot can write to this channel."""
+    ),
+    'set deafult': dedent(
+        '''Set default values configuration:
+        Main, Sound, Public channels
+        Configurations: aa, autotake, conf'''
+    ),
+    'autotake': 'Autotake mode configuration command',
+    'aa': 'Answering machine mode configuration command',
+    'conf': 'Conference mode command',
+
+}
+
+
 class Configuration(Cog):
     def __int__(self, bot):
         self.bot = bot
@@ -65,10 +98,10 @@ class Configuration(Cog):
         else:
             return ManagerMessages.get_message_already_set_channel(group, channel)
 
-    @commands.group(name='set')
-    async def general_set(self, ctx: Context):
+    @commands.group(name='set', help=description['set'], brief=description['set'])
+    async def base_set(self, ctx: Context):
         """
-        General command for set group
+        Base command for set group
 
         Args:
             ctx: Context command of discord message
@@ -77,24 +110,24 @@ class Configuration(Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send('Look on help for more info')
 
-    @general_set.command(name='default')
+    @base_set.command(name='default', help=description['set deafult'])
     async def set_default(self, ctx: Context):
         config.set_default()
         await ctx.send(ManagerMessages.get_message_succesfully_set_default())
 
-    @general_set.command(name='main')
+    @base_set.command(name='main', help=description['set main'])
     async def set_channel_main(self, ctx: Context, channel: str):
         if channel is not None:
             result = self._set_channel('main', channel)
             await ctx.send(result)
 
-    @general_set.command(name='sound')
+    @base_set.command(name='sound', help=description['set sound'])
     async def set_channel_sound(self, ctx: Context, channel: str):
         if channel is not None:
             result = self._set_channel('sound', channel)
             await ctx.send(result)
 
-    @general_set.command(name='public')
+    @base_set.command(name='public', help=description['set public'])
     async def set_channel_public(self, ctx: Context, channel: str):
         if channel is not None:
             result = self._set_channel('public', channel)

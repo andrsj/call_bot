@@ -1,6 +1,6 @@
 channels:
   logs:
-    id: 0
+    id: 706833509750407228
     name: full-logs
   main: main
   public: public
