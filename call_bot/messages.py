@@ -49,20 +49,36 @@ class ManagerMessages:
         return f'Add done: {phone_model}'
 
     @staticmethod
-    def get_message_succesfully_update_phone(phone_model):
-        return f'Phone: {phone_model} succesfully updated'
+    def get_message_succesfully_update_phone(phone, value, new):
+        return f'{value} in \'{phone}\' succesfully updated on \'{new}\''
+
+    @staticmethod
+    def get_message_succesfully_delete_phone(phone):
+        return f'Phone \'{phone}\' succesfully delete'
 
     @staticmethod
     def get_message_not_found_phone(phone):
         return f'User by \'{phone}\' not found!'
 
     @staticmethod
-    def get_message_phone_already_in_prioritet():
-        return 'This number already in prioritet'
+    def get_message_phone_already_in(value):
+        return f'This number already in {value}'
+
+    @staticmethod
+    def get_message_succesfully_remove_prior_number(number):
+        return f'Priority succesfully remove from phone {number}'
+
+    @staticmethod
+    def get_message_succesfully_ban_number(number):
+        return f'Ban succesfully set for phone {number}'
+
+    @staticmethod
+    def get_message_succesfully_remove_ban_number(number):
+        return f'Ban succesfully remove from phone {number}'
 
     @staticmethod
     def get_message_succesfully_update_phone_prioritet(phone):
-        return f'{phone} succesfully updated priority to \'True\''
+        return f"'{phone.phone}' succesfully updated priority to 'True'"
 
     @staticmethod
     def get_message_not_found_number():
@@ -73,3 +89,12 @@ class ManagerMessages:
     def get_message_phone_already_exist_():
         return 'This user already exist in phone book\n' \
                'Check in \'pb\' for searching'
+
+    @staticmethod
+    def get_message_help_edit():
+        return 'Look on `help edit` for more info'
+
+    @staticmethod
+    def phone_format(phone, name, prior, ban):
+        return f'{name} : {phone} ' \
+               f'[p:{prior} b:{ban}]'
